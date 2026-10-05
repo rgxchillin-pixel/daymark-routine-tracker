@@ -1,4 +1,4 @@
-const CACHE_NAME = 'daymark-shell-v3';
+const CACHE_NAME = 'daymark-shell-v4';
 const APP_SHELL = [
   './',
   './index.html',
@@ -6,8 +6,6 @@ const APP_SHELL = [
   './app.js',
   './auth-ui.js',
   './firebase-config.js',
-  './firebase-setup.html',
-  './FIREBASE-SETUP.md',
   './manifest.json',
   './daymark-icon.svg',
   './daymark-192.png',
