@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f7f4" />
+  <meta name="description" content="A calm, thoughtful space to build routines that stick." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Daymark" />
+  <title>Daymark — Make room for what matters</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./daymark-icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./daymark-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" defer></script>
+  <script src="./firebase-config.js" defer></script>
+  <script src="./app.js" defer></script>
+  <script src="./auth-ui.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#dashboard" aria-label="Daymark home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M8 21.5a8 8 0 0 1 16 0"/><path d="M11 21.5a5 5 0 0 1 10 0"/><path d="M16 8v3"/><path d="M7.8 13.1l2.1 2.1M24.2 13.1l-2.1 2.1"/><path d="M7 24h18"/></svg></span><span>daymark<span class="brand-period">.</span></span></a>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="nav-link active" data-page="dashboard"><span class="nav-icon">◫</span>Overview</button>
+        <button class="nav-link" data-page="history"><span class="nav-icon">▦</span>Calendar</button>
+        <button class="nav-link" data-page="statistics"><span class="nav-icon">⌁</span>Insights</button>
+        <button class="nav-link" data-page="routines"><span class="nav-icon">☷</span>My routines</button>
+      </nav>
+      <div class="side-bottom">
+        <div class="side-quote"><span class="quote-mark">“</span><p>Small steps, taken daily, lead to big things.</p><span class="quote-by">— James Clear</span></div>
+        <button class="nav-link" data-page="settings"><span class="nav-icon">⚙</span>Settings</button>
+        <div class="profile"><span class="avatar" id="avatar">J</span><span class="profile-meta"><b id="profile-name">Jamie Parker</b><small>Your personal space</small></span><button class="icon-button profile-edit" data-page="settings" aria-label="Edit settings">···</button></div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar"><button class="mobile-brand" data-page="dashboard"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M8 21.5a8 8 0 0 1 16 0"/><path d="M11 21.5a5 5 0 0 1 10 0"/><path d="M16 8v3"/><path d="M7.8 13.1l2.1 2.1M24.2 13.1l-2.1 2.1"/><path d="M7 24h18"/></svg></span><span>daymark<span class="brand-period">.</span></span></button><div class="breadcrumbs"><span>Workspace</span><span class="crumb-slash">/</span><b id="crumb-current">Overview</b></div><div class="top-actions"><span class="today-label" id="top-date"></span><span class="top-avatar" id="top-avatar">J</span></div></header>
+      <div class="page-wrap" id="page-root"></div>
+    </main>
+  </div>
+  <nav class="mobile-nav" aria-label="Mobile navigation"><button class="mobile-link active" data-page="dashboard"><span>◫</span>Today</button><button class="mobile-link" data-page="history"><span>▦</span>Calendar</button><button class="mobile-add" id="mobile-add" aria-label="Add routine">＋</button><button class="mobile-link" data-page="statistics"><span>⌁</span>Insights</button><button class="mobile-link" data-page="routines"><span>☷</span>Routines</button></nav>
+  <div id="modal-root"></div><div id="toast-root" class="toast-root" aria-live="polite"></div>
+</body>
+</html>

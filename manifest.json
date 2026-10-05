@@ -1,0 +1,32 @@
+{
+  "id": "./",
+  "name": "Daymark — Routine Tracker",
+  "short_name": "Daymark",
+  "description": "A calm, thoughtful space to build routines that stick.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#f7f7f4",
+  "theme_color": "#397e61",
+  "icons": [
+    {
+      "src": "./daymark-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./daymark-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./daymark-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
