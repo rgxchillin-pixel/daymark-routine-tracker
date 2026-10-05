@@ -12,7 +12,8 @@
             el.textContent = user ? `Signed in · ${user.displayName || user.email}` : 'Sign in';
           });
           document.querySelectorAll('[data-account-signout]').forEach(el => el.hidden = !user);
-          if(user){try{const key='daymark:v1',saved=JSON.parse(localStorage.getItem(key)||'{}');saved.user=saved.user||{};if(!saved.user.name){saved.user.name=user.displayName||(user.email||'').split('@')[0]||'Friend';saved.user.onboarded=true;localStorage.setItem(key,JSON.stringify({...saved,...(saved.user.name?{}:{user:saved.user})}));location.reload()}}catch{}}
+          if(user) window.daymarkCloudSync?.connect(user);
+          else window.daymarkCloudSync?.disconnect();
         });
       } catch (error) { console.error('Daymark account setup failed', error); }
     }
@@ -23,14 +24,14 @@
       modal.id = 'daymark-auth-modal';
       modal.className = 'modal-backdrop';
       modal.innerHTML = `<section class="modal auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
-        <div class="modal-header"><div><div class="eyebrow">YOUR DAYMARK ACCOUNT</div><h2 id="auth-title">Sign in or create an account</h2><p>Keep your profile connected.</p></div><button class="modal-close" aria-label="Close">×</button></div>
+        <div class="modal-header"><div><div class="eyebrow">YOUR DAYMARK ACCOUNT</div><h2 id="auth-title">Sign in or create an account</h2><p>Sync your routines and progress across devices.</p></div><button class="modal-close" aria-label="Close">×</button></div>
         <div class="modal-body"><button class="google-signin-button" id="auth-google" ${enabled?'':'disabled'}><span class="google-g">G</span> Continue with Google</button>
           <div class="auth-divider"><span>or use email</span></div><div class="auth-tabs"><button class="selected" type="button" data-mode="signin">Sign in</button><button type="button" data-mode="register">Create account</button></div>
           <form id="auth-form"><div class="form-field"><label for="auth-email">Gmail or email address</label><input id="auth-email" type="email" autocomplete="email" placeholder="you@gmail.com" required></div>
           <div class="form-field"><label for="auth-password">Daymark password</label><input id="auth-password" type="password" autocomplete="current-password" minlength="6" placeholder="At least 6 characters" required></div>
           <button class="primary-button auth-submit" ${enabled?'':'disabled'}>Sign in</button><button type="button" class="auth-reset" id="auth-reset">Forgot password?</button></form>
-          <p class="auth-feedback" id="auth-feedback" role="status">${enabled?'Use Google to sign in with your Google account. Email sign-in uses a separate Daymark password.':'To activate accounts, connect a Firebase project in firebase-config.js and enable Google and Email/Password sign-in.'}</p>
-          <p class="auth-privacy">Your routine data stays in this browser. Account sign-in does not sync it between devices.</p></div></section>`;
+          <p class="auth-feedback" id="auth-feedback" role="status">${enabled?'Use Google to sign in with your Google account. Email sign-in uses a separate Daymark password.':`To activate accounts and cross-device sync, follow the <a href="./firebase-setup.html" target="_blank" rel="noopener">Firebase setup guide</a>.`}</p>
+          <p class="auth-privacy">With Firebase configured, your routines, settings, and progress sync to your account.</p></div></section>`;
       document.body.append(modal);
       if(auth?.currentUser){const signout=document.createElement('button');signout.className='secondary-button';signout.textContent='Sign out';signout.style.cssText='display:block;margin:12px auto 0';signout.onclick=async()=>{await auth.signOut();modal.remove()};modal.querySelector('.modal-body').append(signout)}
       modal.querySelector('.modal-close').onclick=()=>modal.remove();
@@ -47,7 +48,7 @@
     const welcome=document.querySelector('.welcome-card');
     if(welcome){const b=accountButton(enabled?'Sign in or register':'Set up account');b.className='google-signin-button welcome-account';b.textContent='Continue with Google or email';welcome.querySelector('#welcome-form')?.after(b)}
     const settings=document.querySelector('.settings-grid');
-    if(settings&&!document.getElementById('account-settings')){const block=document.createElement('section');block.className='settings-block account-settings';block.id='account-settings';block.innerHTML=`<h3>Your account</h3><p>Sign in with Google, or use an email and Daymark password.</p><button class="secondary-button" id="settings-account">${enabled?'Manage account':'Set up account'}</button><small>Your routines remain on this device until cloud sync is connected.</small>`;block.querySelector('button').onclick=open;settings.prepend(block)}
+    if(settings&&!document.getElementById('account-settings')){const block=document.createElement('section');block.className='settings-block account-settings';block.id='account-settings';block.innerHTML=`<h3>Your account</h3><p>Sign in with Google, or use an email and Daymark password.</p><button class="secondary-button" id="settings-account">${enabled?'Manage account':'Set up account'}</button><small>Routines, settings, and progress sync across devices when Firebase is configured.</small>`;block.querySelector('button').onclick=open;settings.prepend(block)}
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
 })();

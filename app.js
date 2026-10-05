@@ -29,9 +29,35 @@
   if(hasSavedState&&state.user.name==='Jamie Parker'&&!state.user.onboarded)state.user.name='';
   state.categories=state.categories||[...CATEGORIES];state.routines=state.routines||[];state.statuses=state.statuses||{};
   let page='dashboard';
+  let cloudUid=null, cloudDoc=null, cloudUnsubscribe=null, cloudTimer=null, applyingCloud=false, cloudReady=false, cloudDirty=false, localRevision=0;
+  const cloudKey=uid=>`${KEY}:user:${uid}`;
+  function normalizeState(value){const d=defaults();if(!value||typeof value!=='object')return d;return {...d,...value,user:{...d.user,...(value.user||{})},categories:Array.isArray(value.categories)?value.categories:d.categories,routines:Array.isArray(value.routines)?value.routines:d.routines,statuses:value.statuses&&typeof value.statuses==='object'?value.statuses:d.statuses}}
   let deferredInstallPrompt=null;
   const root=document.getElementById('page-root');
-  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch{toast('This browser blocked saving. Open Daymark in a normal browser window and allow site storage.');return false}}
+  function save(){try{const json=JSON.stringify(state);localStorage.setItem(cloudUid?cloudKey(cloudUid):KEY,json);if(cloudUid&&!applyingCloud&&cloudReady&&cloudDoc){cloudDirty=true;const revision=++localRevision;clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>cloudDoc.set({state:JSON.parse(json),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(()=>{if(revision===localRevision)cloudDirty=false}).catch(err=>{console.error('Daymark cloud save failed',err);toast('Saved on this device. Cloud sync failed; check your connection.') }),450)}return true}catch{toast('This browser blocked saving. Open Daymark in a normal browser window and allow site storage.');return false}}
+  async function connectCloud(user){
+    if(!window.firebase||!firebase.firestore||!user)return;
+    if(cloudUid===user.uid&&cloudReady)return;
+    if(cloudUnsubscribe)cloudUnsubscribe();clearTimeout(cloudTimer);cloudReady=false;applyingCloud=true;
+    const previousUid=localStorage.getItem(`${KEY}:lastUid`),accountKey=cloudKey(user.uid),cached=localStorage.getItem(accountKey);
+    let local;
+    try{local=cached?normalizeState(JSON.parse(cached)):(!previousUid&&hasSavedState?normalizeState(JSON.parse(localStorage.getItem(KEY)||'{}')):defaults())}catch{local=defaults()}
+    cloudUid=user.uid;state=local;
+    if(!state.user.name){state.user.name=user.displayName||(user.email||'').split('@')[0]||'Friend';state.user.onboarded=true}
+    localStorage.setItem(`${KEY}:lastUid`,user.uid);localStorage.setItem(accountKey,JSON.stringify(state));
+    cloudDoc=firebase.firestore().collection('users').doc(user.uid);
+    try{
+      const snap=await cloudDoc.get();
+      if(cloudUid!==user.uid)return;
+      if(snap.exists&&snap.data().state){state=normalizeState(snap.data().state);localStorage.setItem(accountKey,JSON.stringify(state))}
+      else await cloudDoc.set({state,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+      cloudReady=true;cloudDirty=false;applyingCloud=false;applyTheme();render();
+      if(cloudUnsubscribe)cloudUnsubscribe();
+      cloudUnsubscribe=cloudDoc.onSnapshot(snapshot=>{if(!snapshot.exists||!snapshot.data().state||cloudDirty)return;const incoming=normalizeState(snapshot.data().state),current=JSON.stringify(state);if(JSON.stringify(incoming)===current)return;applyingCloud=true;state=incoming;try{localStorage.setItem(accountKey,JSON.stringify(state))}catch{}applyingCloud=false;applyTheme();render();toast('Your Daymark data synced')},err=>{console.error('Daymark cloud listener failed',err);toast('Cloud sync paused. Your data is still saved on this device.')});
+    }catch(err){if(cloudUid!==user.uid)return;cloudReady=false;applyingCloud=false;console.error('Daymark cloud connection failed',err);toast('Could not sync your account. Check Firebase setup and Firestore rules.')}
+  }
+  function disconnectCloud(){if(!cloudUid)return;if(cloudUnsubscribe)cloudUnsubscribe();cloudUnsubscribe=null;clearTimeout(cloudTimer);cloudUid=null;cloudDoc=null;cloudReady=false;applyingCloud=false;cloudDirty=false;state=defaults();page='dashboard';render()}
+  window.daymarkCloudSync={connect:connectCloud,disconnect:disconnectCloud};
   function scheduled(r,date){return (!r.paused||date<today())&&Array.isArray(r.days)&&r.days.includes(fromIso(date).getDay())}
   function status(r,date){return state.statuses[dateKey(r,date)]||'pending'}
   function setStatus(r,date,value){if(value==='pending')delete state.statuses[dateKey(r,date)];else state.statuses[dateKey(r,date)]=value;save()}
