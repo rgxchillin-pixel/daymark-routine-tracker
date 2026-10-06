@@ -14,12 +14,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=20261006" />
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
-  <script src="./firebase-config.js?v=20261005" defer></script>
-  <script src="./app.js" defer></script>
+  <script src="./firebase-config.js?v=20261006" defer></script>
+  <script src="./coach-ai.js?v=20261006" defer></script>
+  <script src="./app.js?v=20261006" defer></script>
   <script src="./auth-ui.js" defer></script>
 </head>
 <body>
@@ -32,6 +33,7 @@
         <button class="nav-link" data-page="history"><span class="nav-icon">▦</span>Calendar</button>
         <button class="nav-link" data-page="statistics"><span class="nav-icon">⌁</span>Insights</button>
         <button class="nav-link" data-page="routines"><span class="nav-icon">☷</span>My routines</button>
+        <button class="nav-link" data-page="coach"><span class="nav-icon">✦</span>Routine Coach</button>
       </nav>
       <div class="side-bottom">
         <div class="side-quote"><span class="quote-mark">“</span><p>Small steps, taken daily, lead to big things.</p><span class="quote-by">— James Clear</span></div>
@@ -45,7 +47,7 @@
       <div class="page-wrap" id="page-root"></div>
     </main>
   </div>
-  <nav class="mobile-nav" aria-label="Mobile navigation"><button class="mobile-link active" data-page="dashboard"><span>◫</span>Today</button><button class="mobile-link" data-page="history"><span>▦</span>Calendar</button><button class="mobile-add" id="mobile-add" aria-label="Add routine">＋</button><button class="mobile-link" data-page="statistics"><span>⌁</span>Insights</button><button class="mobile-link" data-page="routines"><span>☷</span>Routines</button></nav>
+  <nav class="mobile-nav" aria-label="Mobile navigation"><button class="mobile-link active" data-page="dashboard"><span>◫</span>Today</button><button class="mobile-link" data-page="history"><span>▦</span>Calendar</button><button class="mobile-add" id="mobile-add" aria-label="Add routine">＋</button><button class="mobile-link" data-page="coach"><span>✦</span>Coach</button><button class="mobile-link" data-page="routines"><span>☷</span>Routines</button></nav>
   <div id="modal-root"></div><div id="toast-root" class="toast-root" aria-live="polite"></div>
 </body>
 </html>

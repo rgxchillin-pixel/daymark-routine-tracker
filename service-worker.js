@@ -1,10 +1,11 @@
-const CACHE_NAME = 'daymark-shell-v5';
+const CACHE_NAME = 'daymark-shell-v6';
 const APP_SHELL = [
   './',
   './index.html',
   './styles.css',
   './app.js',
   './auth-ui.js',
+  './coach-ai.js',
   './firebase-config.js',
   './manifest.json',
   './daymark-icon.svg',

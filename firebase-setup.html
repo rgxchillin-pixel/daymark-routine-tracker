@@ -16,7 +16,7 @@
     <li>In <b>Authentication → Sign-in method</b>, enable <b>Google</b> and <b>Email/Password</b>. Google sign-in uses Google’s own secure sign-in. Email/password creates a separate Daymark password.</li>
     <li>In <b>Authentication → Settings → Authorized domains</b>, add <code>daymark-6.netlify.app</code> and <code>rgxchillin-pixel.github.io</code>. Add your own domain too, if you use one.</li>
     <li>Create a <b>Cloud Firestore</b> database. In its <b>Rules</b> tab, paste the rules from the included <code>firestore.rules</code> file and publish them. They restrict each account to its own data.</li>
-    <li>Put the Web app config in <code>firebase-config.js</code> in the site files, replacing <code>null</code>:</li>
+    <li>Put the Web app config in <code>firebase-config.js</code> in the site files:</li>
   </ol>
   <pre>window.DAYMARK_FIREBASE_CONFIG = {
   apiKey: "your-web-api-key",
@@ -24,6 +24,14 @@
   projectId: "your-project-id",
   appId: "your-web-app-id"
 };</pre>
+  <h2>Enable the AI Routine Coach</h2>
+  <ol>
+    <li>In Firebase, open <b>AI Logic → Get started</b> and choose the <b>Gemini Developer API</b>.</li>
+    <li>Register the same Web app under <b>App Check → Apps</b> with <b>reCAPTCHA v3</b>. Add the live website host names to that provider.</li>
+    <li>Paste the public reCAPTCHA <b>site key</b> into <code>window.DAYMARK_AI_CONFIG.recaptchaSiteKey</code> in <code>firebase-config.js</code>. Never use a secret key or debug token in the website.</li>
+    <li>After App Check works on the live hosts, enforce <b>Firebase AI Logic</b> under App Check → APIs.</li>
+  </ol>
+  <p>The first time someone asks the Coach for an AI reply, Daymark asks permission to send their message and a compact routine summary to Gemini through Firebase. Their name and email are excluded. Health and urgent-safety queries stay on the device. Review Firebase / Google Cloud quotas and billing before public use.</p>
   <p>Publish the changed site files. Then sign in while online. The first account on an existing browser keeps its saved routines and uploads them; later edits sync to other devices signed in to the same account.</p>
   <p class="note"><b>Keep passwords private.</b> Firebase web configuration is public project information. Never place a service-account file, private key, Google password, or email password in the site source.</p>
   <a class="back" href="./">← Back to Daymark</a>
